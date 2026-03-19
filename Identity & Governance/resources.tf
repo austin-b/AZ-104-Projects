@@ -1,22 +1,21 @@
-# create prod resource group
+########## STAGE 1 - Create Resource Groups
+# prod resource group
 resource "azurerm_resource_group" "prod" {
   name     = "rg-prod"
   location = "East US"
 }
-
-# create dev resource group
+# dev resource group
 resource "azurerm_resource_group" "dev" {
   name     = "rg-dev"
   location = "East US"
 }
-
-# create staging resource group
+# staging resource group
 resource "azurerm_resource_group" "staging" {
   name     = "rg-staging"
   location = "East US"
 }
 
-# creating three new users using the "users" module
+############ STAGE 2 - Create Users
 module "users" {
   source = "./modules/users"
 
@@ -41,3 +40,4 @@ module "users" {
     }
   }
 }
+
