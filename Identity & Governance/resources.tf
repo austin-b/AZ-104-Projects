@@ -58,13 +58,13 @@ resource "azuread_group" "viewers" {
 # Add users to groups
 resource "azuread_group_member" "admins" {
   group_object_id = azuread_group.admins.object_id
-  member_object_id = module.users.admin-user.object_id
+  member_object_id = module.users.user_ids["admin-user"]
 }
 resource "azuread_group_member" "devs" {
   group_object_id = azuread_group.devs.object_id
-  member_object_id = module.users.dev-user.object_id
+  member_object_id = module.users.user_ids["dev-user"]
 }
 resource "azuread_group_member" "viewers" {
   group_object_id = azuread_group.viewers.object_id
-  member_object_id = module.users.readonly-user.object_id
+  member_object_id = module.users.user_ids["readonly-user"]
 }
