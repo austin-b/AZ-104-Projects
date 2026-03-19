@@ -1,8 +1,20 @@
-# do not currently need this resource group
-# resource "azurerm_resource_group" "dev" {
-#   name     = "rg-dev"
-#   location = "East US"
-# }
+# create prod resource group
+resource "azurerm_resource_group" "prod" {
+  name     = "rg-prod"
+  location = "East US"
+}
+
+# create dev resource group
+resource "azurerm_resource_group" "dev" {
+  name     = "rg-dev"
+  location = "East US"
+}
+
+# create staging resource group
+resource "azurerm_resource_group" "staging" {
+  name     = "rg-staging"
+  location = "East US"
+}
 
 # creating three new users using the "users" module
 module "users" {
