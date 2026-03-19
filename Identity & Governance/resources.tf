@@ -41,3 +41,30 @@ module "users" {
   }
 }
 
+############ STAGE 3 - Create Groups and Assign Users
+# Create groups
+resource "azuread_group" "admins" {
+  display_name     = "Admins"
+  security_enabled = true
+}
+resource "azuread_group" "devs" {
+  display_name     = "Developers"
+  security_enabled = true
+}
+resource "azuread_group" "viewers" {
+  display_name     = "Viewers"
+  security_enabled = true
+}
+# Add users to groups
+resource "azuread_group_member" "admins" {
+  group_object_id = azuread_group.admins.object_id
+  member_object_id = module.users.admin-user.object_id
+}
+resource "azuread_group_member" "devs" {
+  group_object_id = azuread_group.devs.object_id
+  member_object_id = module.users.dev-user.object_id
+}
+resource "azuread_group_member" "viewers" {
+  group_object_id = azuread_group.viewers.object_id
+  member_object_id = module.users.readonly-user.object_id
+}
