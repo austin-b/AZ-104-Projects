@@ -1,4 +1,4 @@
-########## STAGE 1 - Create Resource Groups
+########## Create Resource Groups
 # prod resource group
 resource "azurerm_resource_group" "prod" {
   name     = "rg-prod"
@@ -15,7 +15,7 @@ resource "azurerm_resource_group" "staging" {
   location = "East US"
 }
 
-############ STAGE 2 - Create Users
+############ Create Users
 module "users" {
   source = "./modules/users"
 
@@ -41,7 +41,7 @@ module "users" {
   }
 }
 
-############ STAGE 3 - Create Groups and Assign Users
+############ Create Groups and Assign Users
 # Create groups
 resource "azuread_group" "admins" {
   display_name     = "Admins"
