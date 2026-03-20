@@ -68,3 +68,23 @@ resource "azuread_group_member" "viewers" {
   group_object_id = azuread_group.viewers.object_id
   member_object_id = module.users.user_ids["readonly-user"]
 }
+
+############ Create Role Assignments
+# Admins get Owner role on prod resource group
+resource "azurerm_role_assignment" "admins_prod" {
+  scope = azurerm_resource_group.prod.id
+  role_definition_name = "Owner"
+  principal_id = azuread_group.admins.object_id
+}
+# Devs get Contributor role on dev resource group
+resource "azurerm_role_assignment" "devs_dev" {
+  scope = azurerm_resource_group.dev.id
+  role_definition_name = "Contributor"
+  principal_id = azuread_group.devs.object_id
+}
+# Viewers get Reader role on entire subscription
+resource "azurerm_role_assignment" "viewers_all" {
+  scope = "/subscriptions/${var.subscription_id}" # needs to be in this format for subscription-level scope
+  role_definition_name = "Reader"
+  principal_id = azuread_group.viewers.object_id
+}
