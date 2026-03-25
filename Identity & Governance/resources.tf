@@ -88,3 +88,54 @@ resource "azurerm_role_assignment" "viewers_all" {
   role_definition_name = "Reader"
   principal_id = azuread_group.viewers.object_id
 }
+
+############ Create Policies
+# ensure all resources have a CostCenter tag
+resource "azurerm_policy_definition" "require_costcenter_tag" {
+  name         = "require-costcenter-tag"
+  policy_type  = "Custom"
+  mode         = "All"
+  display_name = "Require Cost Center Tag"
+  description   = "This policy requires that all resources have a 'CostCenter' tag."
+
+  policy_rule = jsonencode({
+  "if": {
+    "field": "tags.CostCenter",
+    "exists": "false"
+  },
+  "then": {
+    "effect": "deny"
+  }})
+}
+
+# Apply policy to all resource groups
+resource "azurerm_resource_group_policy_assignment" "require_costcenter_tag_prod" {
+  name = "require-costcenter-tag-prod"
+  policy_definition_id = azurerm_policy_definition.require_costcenter_tag.id
+  resource_group_id = azurerm_resource_group.prod.id
+}
+resource "azurerm_resource_group_policy_assignment" "require_costcenter_tag_dev" {
+  name = "require-costcenter-tag-dev"
+  policy_definition_id = azurerm_policy_definition.require_costcenter_tag.id
+  resource_group_id = azurerm_resource_group.dev.id
+}
+resource "azurerm_resource_group_policy_assignment" "require_costcenter_tag_staging" {
+  name = "require-costcenter-tag-staging"
+  policy_definition_id = azurerm_policy_definition.require_costcenter_tag.id
+  resource_group_id = azurerm_resource_group.staging.id
+}
+
+# Apply policy to subscription and only allow creation in East US and East US 2
+resource "azurerm_subscription_policy_assignment" "limit_allowed_locations" {
+  name = "limit-allowed-locations"
+  policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/e56962a6-4747-49cd-b67b-bf8b01975c4c"
+  subscription_id = "/subscriptions/${var.subscription_id}"
+
+  parameters = jsonencode({
+  "listOfAllowedLocations": {
+    "value": [
+      "eastus",
+      "eastus2"
+    ]
+  }})
+}
