@@ -6,4 +6,5 @@ resource "azuread_user" "this" {
   display_name        = each.value.display_name
   mail_nickname       = each.value.mail_nickname
   password            = each.value.password
+  force_password_change = true
 }

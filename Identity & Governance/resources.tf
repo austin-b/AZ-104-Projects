@@ -151,9 +151,9 @@ resource "azurerm_management_lock" "prod_delete_lock" {
 ############ Set up budget alerts for the subscription
 resource "azurerm_consumption_budget_subscription" "monthly_recurring" {
   name = "monthly-budget"
-  subscription_id = var.subscription_id
+  subscription_id = "/subscriptions/${var.subscription_id}"
   amount = 100
-  time_grain = "monthly"
+  time_grain = "Monthly"
 
   time_period {
     start_date = "2026-04-01T00:00:00Z"
@@ -164,7 +164,7 @@ resource "azurerm_consumption_budget_subscription" "monthly_recurring" {
     enabled = true
     threshold = 80
     operator = "EqualTo"
-    threshold_type = "Forcasted"
+    threshold_type = "Forecasted"
     contact_emails = ["admin@example.com"]
   }
 

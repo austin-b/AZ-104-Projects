@@ -10,4 +10,5 @@ variable "tenant_id" {
 
 variable "default_user_password" {
   type = string
+  sensitive = true
 }
