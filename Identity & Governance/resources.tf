@@ -139,3 +139,40 @@ resource "azurerm_subscription_policy_assignment" "limit_allowed_locations" {
     ]
   }})
 }
+
+############ Add a "CanNotDelete" lock to prod resource group
+resource "azurerm_management_lock" "prod_delete_lock" {
+  name = "prod-delete-lock"
+  scope = azurerm_resource_group.prod.id
+  lock_level = "CanNotDelete"
+  notes = "Protect Production RG from deletion."
+}
+
+############ Set up budget alerts for the subscription
+resource "azurerm_consumption_budget_subscription" "monthly_recurring" {
+  name = "monthly-budget"
+  subscription_id = var.subscription_id
+  amount = 100
+  time_grain = "monthly"
+
+  time_period {
+    start_date = "2026-04-01T00:00:00Z"
+    end_date   = "2026-05-01T00:00:00Z"
+  }
+
+  notification {
+    enabled = true
+    threshold = 80
+    operator = "EqualTo"
+    threshold_type = "Forcasted"
+    contact_emails = ["admin@example.com"]
+  }
+
+  notification {
+    enabled = true
+    threshold = 100
+    operator = "GreaterThan"
+    threshold_type = "Actual"
+    contact_emails = ["admin@example.com"]
+  }
+}
